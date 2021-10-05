@@ -1,0 +1,7 @@
+name: aliceinborderland-mc
+main: fr.zedocorp.aib.Main
+author: baztoul76
+version: a0.1
+api-version: 1.8.9
+commands: 
+    # ...
