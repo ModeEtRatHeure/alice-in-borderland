@@ -1,10 +1,8 @@
 package fr.zedocorp.aib.game;
 
-import fr.zedocorp.aib.util.Static;
-import org.bukkit.Bukkit;
-
 public class Game {
 	public enum GameState {
+		NOT_STARTED("not_started"),
 		STARTING("starting"),
 		STARTED("started");
 		
@@ -19,10 +17,33 @@ public class Game {
 		}
 	}
 	
-	public void startWaitingTimer() {
-		Bukkit.getServer().broadcastMessage("en attente de joueurs");
-		while (Static.getOnlinePlayerAmount(Bukkit.getServer()) != 20) {
-			
+	protected String state;
+	
+	public void setState(String state) {
+		switch (state) {
+			case "not_started":
+				this.state = state;
+				break;
+			case "starting":
+				this.state = state;
+				break;
+			case "started":
+				this.state = state;
+				break;
+			default:
+				break;
 		}
+	}
+	
+	public String getState() {
+		return state;
+	}
+	
+	public void startWaitingTimer() {
+		if (state != GameState.NOT_STARTED.toString()) return;
+	}
+	
+	public void stopWaitingTimer() {
+		if (state != GameState.STARTING.toString()) return;
 	}
 }

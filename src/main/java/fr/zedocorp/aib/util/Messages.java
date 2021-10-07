@@ -17,7 +17,6 @@ public enum Messages {
 		try {
 			props.load(this.getClass().getResource("/fr.properties").openStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
