@@ -10,7 +10,7 @@ import fr.zedocorp.aib.events.Events;
  * 
  * @version	alpha-0.0.1
  */
-public class Main extends JavaPlugin {
+public class AIB extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		System.out.println("plugin AIB activé");

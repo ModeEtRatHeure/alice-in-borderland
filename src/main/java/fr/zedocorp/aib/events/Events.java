@@ -10,6 +10,7 @@ import fr.zedocorp.aib.util.*;
 // import fr.zedocorp.aib.game.*;
 
 public class Events implements Listener {
+	@SuppressWarnings("unused")
 	private JavaPlugin plugin;
 	
 	public Events(JavaPlugin p) {
