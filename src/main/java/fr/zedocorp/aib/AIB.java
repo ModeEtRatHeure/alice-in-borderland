@@ -13,9 +13,12 @@ import fr.zedocorp.aib.game.Game;
  */
 public class AIB extends JavaPlugin {
 	protected Game game;
+	
 	@Override
 	public void onEnable() {
 		System.out.println("plugin AIB activé");
+		
+		this.game = new Game();
 		
 		getServer().getPluginManager().registerEvents(new Events(this, game), this);
 	}
