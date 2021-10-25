@@ -63,13 +63,13 @@ public class Game {
 	}
 	
 	public void startWaitingTimer() {
+		remainingTime = 30;
 		timer.restart();
 	}
 	
 	public void stopWaitingTimer() {
 		if (state != GameState.STARTING.toString()) return;
 		timer.stop();
-		remainingTime = 30;
 	}
 	
 	public void startGame() {
