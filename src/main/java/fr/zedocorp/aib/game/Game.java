@@ -63,7 +63,7 @@ public class Game {
 	}
 	
 	public void startWaitingTimer() {
-		
+		timer.restart();
 	}
 	
 	public void stopWaitingTimer() {
