@@ -23,9 +23,9 @@ public class Events implements Listener {
 	
 	@EventHandler()
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		if (Static.getOnlinePlayerAmount(Bukkit.getServer()) == 1) {
+		/*if (Static.getOnlinePlayerAmount(Bukkit.getServer()) == 1) {
 			
-		}
+		}*/
 		
 		if (Static.getOnlinePlayerAmount(Bukkit.getServer()) < 4) {
 			if (game.getState() == Game.GameState.STARTING.toString()) {
