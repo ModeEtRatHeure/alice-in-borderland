@@ -22,4 +22,8 @@ public class AIB extends JavaPlugin {
 		
 		getServer().getPluginManager().registerEvents(new Events(this, game), this);
 	}
+	
+	public Game getGame() {
+		return game;
+	}
 }
