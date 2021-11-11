@@ -23,23 +23,20 @@ public class Events implements Listener {
 	
 	@EventHandler()
 	public void onPlayerJoin(PlayerJoinEvent e) {
+		e.setJoinMessage(Messages.CHAT_JOIN.toString().replace("%player%", e.getPlayer().getName()).replace("%n%", "" + Static.getOnlinePlayerAmount(Bukkit.getServer())));
 		/*if (Static.getOnlinePlayerAmount(Bukkit.getServer()) == 1) {
-			
-		}*/
-		
-		if (Static.getOnlinePlayerAmount(Bukkit.getServer()) < 4) {
+			System.out.println("premier joueur connecté");
+			Bukkit.getServer().broadcastMessage("premier joueur connecté");
+		} else */if (Static.getOnlinePlayerAmount(Bukkit.getServer()) < 4) {
 			if (game.getState() == Game.GameState.STARTING.toString()) {
-				game.stopWaitingTimer();
+				//game.stopWaitingTimer();
 			}
-		}
-		
-		if (Static.getOnlinePlayerAmount(Bukkit.getServer()) >= 4) {
+		} else if (Static.getOnlinePlayerAmount(Bukkit.getServer()) >= 4) {
+			System.out.println("lancement");
+			Bukkit.getServer().broadcastMessage("lancement");
 			if (game.getState() == Game.GameState.NOT_STARTED.toString()) {
 				game.startWaitingTimer();
 			}
 		}
-		
-		
-		Bukkit.getServer().broadcastMessage(Messages.CHAT_JOIN.toString().replace("%player%", e.getPlayer().getName()).replace("%n%", "" + Static.getOnlinePlayerAmount(Bukkit.getServer())));
 	}
 }
