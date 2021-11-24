@@ -1,0 +1,57 @@
+package fr.zedocorp.aib.commands;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import fr.zedocorp.aib.game.Manches;
+
+public class CommandChoose implements CommandExecutor {
+	
+	public static Map<Player, Boolean> hasSend = new HashMap<>();
+	public static Map<Player, Integer> numbers = new HashMap<>();
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String arg1, String[] args) {
+		if(hasSend.size()==0) {
+			for(Player pl:Bukkit.getOnlinePlayers()) {
+				hasSend.put(pl, false);
+			}
+		}
+		if(sender instanceof Player) {
+			if(Manches.etape == 0) {
+				if(!Manches.eliminated.contains(sender)) {
+					if(!hasSend.get(sender)) {
+						if(args.length < 2) {
+							if(args.length == 0) {
+								sender.sendMessage("§4Commande incorrecte, nombre demandé.");
+							}else{
+								if(Integer.parseInt(args[0])>100) {
+									sender.sendMessage("§4Commande incorrecte, nombre trop grand.");
+								}else {
+									
+									if(Integer.parseInt(args[0])<0) {
+										sender.sendMessage("§4Commande incorrecte, nombre trop petit.");
+									}else {
+										numbers.put((Player) sender, Integer.parseInt(args[0]));
+										hasSend.remove(sender);
+										hasSend.put((Player) sender, true);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	
+
+}
