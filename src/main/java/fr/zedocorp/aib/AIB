@@ -1,0 +1,29 @@
+package fr.zedocorp.aib;
+
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import fr.zedocorp.aib.commands.CommandChoose;
+import fr.zedocorp.aib.events.Events;
+import fr.zedocorp.aib.game.Game;
+
+public class AIB extends JavaPlugin {
+
+	protected Game game;
+	
+	@Override
+	public void onEnable() {
+		System.out.println("plugin AIB activé");
+		
+		this.game = new Game(this);
+		
+		getServer().getPluginManager().registerEvents(new Events(this, game), this);
+		getCommand("choose").setExecutor(new CommandChoose());
+	}
+	
+	public Game getGame() {
+		return game;
+	}
+	
+
+}
