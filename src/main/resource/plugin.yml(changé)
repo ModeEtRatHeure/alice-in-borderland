@@ -1,0 +1,9 @@
+api: spigot
+name: aliceinborderland-mc
+main: fr.zedocorp.aib.AIB
+author: baztoul76
+version: a0.1
+api-version: 1.8.9
+commands:
+  choose:
+    description: permet au joueur d'envoyer le nombre qu'il a choisi
