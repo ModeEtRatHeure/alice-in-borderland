@@ -1,0 +1,170 @@
+package fr.zedocorp.aib.game;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import fr.zedocorp.aib.commands.CommandChoose;
+
+public class Manches extends BukkitRunnable {
+	
+	public static int etape = 0;
+	protected boolean isFive = true;
+	protected boolean isNewRule = false;
+	protected boolean isExact = false;
+	protected int timer = 6000;
+	protected int total;
+	protected int eliminatedNumber = 0;
+	protected double best;
+	protected int points;
+	protected List<Integer> hundreadAndNull = new ArrayList<>();//elle sans doute inutile, mais j'ai pas trouvé d'autre moyen de la faire(la regle 3)
+	protected List<Player> winner = new ArrayList<>();
+	protected String[] newRules = {"Si deux joueurs (ou plus) choisissent le même nombre, leur choix est invalide.", 
+			"Si un joueur tombe sur le résultat exact (arrondi à l'entier le plus proche), il fait perdre deux points aux autres joueurs.", 
+			"Quand il ne reste plus que deux joueurs, si l'un des deux joueurs choisit 0, si l'autre joueur choisit 100 il gagne."};
+	public static List<Player> eliminated = new ArrayList<>();
+	protected Map<Player, Integer> scores = new HashMap<>();
+	{
+	for(Player pl:Bukkit.getOnlinePlayers()) {
+		scores.put(pl, 0);}
+	}
+ 
+	@Override
+	public void run() {
+		
+		if((timer == 1200 && !isFive)|| timer == 6000) {
+			Bukkit.broadcastMessage("Début de la manche. \nChoisissez un nombre entre 0 et 100 (inclus)");
+			CommandChoose.numbers.clear();
+			if(isFive) {
+				Bukkit.broadcastMessage("Vous disposez de 5 minutes de réflexion au lieu de 1 pour vous habituer aux nouvelles règles.");
+			}
+		}
+		if(timer==0) {
+			if(etape==0) {
+				etape=1;
+				timer=6;
+			}else {
+				etape=0;
+				if(isFive) {
+					timer = 6000;
+					isFive=false;
+				}else {
+					timer=1200;
+				}
+			}
+		}
+		if(etape==1) {
+			for (Entry<Player, Boolean> entry : CommandChoose.hasSend.entrySet()) {
+				if(!CommandChoose.hasSend.get(entry.getKey())) {
+					timer = 1;
+					setPoints(entry.getKey());
+				}
+			}
+			switch(etape) {
+			case 100:
+				for(int number:CommandChoose.numbers.values()) {
+					total += number;
+				}
+				total/=CommandChoose.hasSend.size();
+				total*=0.8;
+				Bukkit.broadcastMessage("Nombre à atteindre: "+total);
+				break;
+			case 80:
+				best = 100;
+				for (Map.Entry<Player, Integer> entry : CommandChoose.numbers.entrySet()) {
+				    System.out.println(entry.getKey().getName() + ": " + entry.getValue());
+				    points = entry.getValue();
+				    if(Math.abs(points-total) < best) {
+						best = points;
+						winner.clear();
+						winner.add(entry.getKey());
+						if((points-Math.round((double)total))==0) {
+							if(eliminated.size()>1) {
+								isExact=true;
+							}
+						}
+						if(eliminated.size()>2) {//regle3
+							hundreadAndNull.clear();
+							for (Map.Entry<Player, Integer> entry2 : CommandChoose.numbers.entrySet()) {
+								hundreadAndNull.add(entry2.getValue());
+							}
+							if(((hundreadAndNull.get(0)==0)&&( hundreadAndNull.get(1)==100))||((hundreadAndNull.get(1)==0)&&( hundreadAndNull.get(0)==100))) {
+								winner.clear();
+								for (Map.Entry<Player, Integer> entry2 : CommandChoose.numbers.entrySet()) {
+									if(entry2.getValue() == 100) {
+										winner.add(entry2.getKey());
+									}
+								}
+							}
+						}
+						if(winner.size()>1) {
+							winner.remove(1);
+						}
+				    }if(Math.abs(points-total) == best) {
+				    	if(eliminated.size()==0) {
+				    		winner.add(entry.getKey());
+				    	}else {
+				    		winner.clear();//regle1
+				    	}
+				    }
+				}
+				break;
+			case 60:
+				for (Map.Entry<Player, Integer> entry : CommandChoose.numbers.entrySet()) {
+					if(!winner.contains(entry.getKey())){
+						setPoints(entry.getKey());
+					}
+					isExact=false;
+				}
+				Bukkit.broadcastMessage("Scores:");
+				for(Map.Entry<Player, Integer> entry : scores.entrySet()) {
+					Bukkit.broadcastMessage(entry.getKey()+": "+entry.getValue());
+				}
+				break;
+			case 40:
+				if(isNewRule) {
+					Bukkit.broadcastMessage("Nouvelle(s) règle(s):");
+					for(int i = 0; i < eliminatedNumber; i++) {
+						Bukkit.broadcastMessage(newRules[i+(eliminated.size()-1)]);
+					}
+					isNewRule=false;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
+	
+	protected void setPoints(Player entry) {
+		best = scores.get(entry);
+		scores.remove(entry);
+		if((best+1)>=10) {
+			eliminated.add(entry);
+			if(eliminated.size()>3) {
+				Bukkit.broadcastMessage(winner.get(0).getName()+"a gagné !");
+				Bukkit.broadcastMessage("Fin de la partie, merci d'avoir  joué !");
+				cancel();
+			}
+			CommandChoose.hasSend.remove(entry);
+			isNewRule = true;
+			eliminatedNumber ++; 
+		}else {
+			if(isExact) {//regle2
+				if(winner.size()>0) {
+					scores.put(entry, (int)best+2);
+				}
+			}else {
+				scores.put(entry, (int)best+1);
+			}
+		}
+	}
+
+}
